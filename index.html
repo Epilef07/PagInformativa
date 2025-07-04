@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sena Dream - Página Informativa</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F8F8; /* Light white background */
+            color: #2d3748; /* Dark gray text */
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .hero-section {
+            background: linear-gradient(to right, #4CAF50, #8BC34A); /* Green gradient */
+            color: #ffffff;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .hero-section p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+        .section-card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease-in-out;
+        }
+        .section-card:hover {
+            transform: translateY(-5px);
+        }
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 600;
+            color: #1B5E20; /* Darker green for section titles */
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #A5D6A7; /* Lighter green border */
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #388E3C; /* Medium green for sub-titles */
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #C8E6C9; /* Subtle green border for h3 */
+            padding-bottom: 0.3rem;
+        }
+        ul {
+            list-style: disc;
+            margin-left: 1.5rem;
+            margin-top: 1rem; /* Added margin-top for better spacing */
+            margin-bottom: 1rem;
+        }
+        ul li {
+            margin-bottom: 0.5rem;
+        }
+        .image-placeholder {
+            background-color: #e2e8f0;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px; /* Fixed height for consistency */
+            width: 100%;
+            overflow: hidden;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: #4a5568;
+            font-size: 0.9rem;
+            object-fit: cover; /* Ensures image covers the area */
+        }
+        .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Cover the area */
+            border-radius: 0.5rem;
+        }
+        .image-caption {
+            font-size: 0.875rem;
+            color: #64748b;
+            text-align: center;
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .hero-section {
+                padding: 2rem 1rem;
+            }
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            .hero-section p {
+                font-size: 1rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            h3 {
+                font-size: 1.25rem;
+            }
+            .grid-cols-2 {
+                grid-template-columns: 1fr; /* Stack columns on small screens */
+            }
+        }
+        /* Spinner styles */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #3182ce; /* Blue spinner */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+            display: none; /* Hidden by default */
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Button styles */
+        #generateScenarioBtn {
+            background: linear-gradient(to right, #4CAF50, #66BB6A); /* Green gradient */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #generateScenarioBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(to right, #66BB6A, #4CAF50); /* Reverse gradient on hover */
+        }
+        
+        /* Modal styles for image zoom */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(2px);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .image-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .image-modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: zoomIn 0.3s ease-in-out;
+        }
+        
+        .image-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .image-modal-close:hover {
+            color: #f1f1f1;
+        }
+        
+        .image-clickable {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .image-clickable:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="hero-section">
+            <h1>Sena Dream: Tu Gestión Hotelera del Futuro</h1>
+            <p>Modernizando la hospitalidad a través de la tecnología y la formación de excelencia.</p>
+        </header>
+
+        <!-- 1. Propósito y Contexto de la Página Web (SenaDream) -->
+        <section class="section-card">
+            <h2>1. Propósito y Contexto de Sena Dream</h2>
+            <h3>Objetivo Principal</h3>
+            <p>La página web SenaDream funciona como una guía completa para la gestión del Hotel Escuela Sena. Su meta es modernizar y mejorar los procesos operativos y la gestión del personal del hotel, buscando mayor eficiencia, reducción de errores en reservas, optimización del control de inventario y personal, y asegurar un servicio de alta calidad.</p>
+
+            <h3>Problema Resuelto</h3>
+            <p>Antes de SenaDream, el Hotel Escuela Sena enfrentaba dificultades operativas y falta de automatización en áreas clave como reservas, control de ingresos, facturación, inventario, manejo de personal y minibar. La ausencia de un sistema centralizado generaba procesos manuales propensos a errores. SenaDream soluciona esto ofreciendo una aplicación web integral que automatiza y mejora estos procesos.</p>
+
+            <h3>Diseño y Accesibilidad</h3>
+            <p>La herramienta fue diseñada en un entorno web intuitivo y accesible, garantizando una experiencia de usuario fluida.</p>
+        </section>
+
+        <!-- 2. Arquitectura y Tecnologías de la Página Web -->
+        <section class="section-card">
+            <h2>2. Arquitectura y Tecnologías</h2>
+            <h3>Tipo de Aplicación</h3>
+            <p>SenaDream es una aplicación web interactiva.</p>
+
+            <h3>Base de Datos</h3>
+            <p>Se comunica con un gestor de bases de datos <strong>MySQL</strong> para centralizar y optimizar las operaciones de gestión hotelera y el almacenamiento de toda la información. Se requiere un servidor de bases de datos estable.</p>
+
+            <h3>Tecnologías de Desarrollo Web</h3>
+            <ul>
+                <li><strong>Lenguaje de Programación Principal:</strong> JavaScript.</li>
+                <li><strong>Entorno de Ejecución Back-end:</strong> Node.js y el framework Express.</li>
+            </ul>
+
+            <h3>Interfaz de Usuario (Front-end)</h3>
+            <ul>
+                <li><strong>Visualización de Calendarios Interactivos:</strong> Librería FullCalendar.</li>
+                <li><strong>Alertas y Modales Personalizados:</strong> SweetAlert2.</li>
+                <li><strong>Iconografía:</strong> Bootstrap Icons.</li>
+                <li><strong>Gestión de Solicitudes HTTP:</strong> Body-Parser y Fetch API.</li>
+                <li><strong>Administración de Sesiones:</strong> Express-Session.</li>
+                <li><strong>Almacenamiento de Datos en Navegador:</strong> LocalStorage.</li>
+            </ul>
+            <p><strong>Implementación:</strong> Está diseñado para ser ejecutado sin necesidad de instalación tradicional, iniciando desde una carpeta específica del proyecto.</p>
+        </section>
+
+        <!-- 3. Funcionalidades Clave y Módulos de la Página Web (Interfaz de Usuario) -->
+        <section class="section-card">
+            <h2>3. Funcionalidades Clave y Módulos</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3>Navegación General</h3>
+                    <ul>
+                        <li><strong>Menú:</strong> Acceso directo al menú principal.</li>
+                        <li><strong>Huéspedes:</strong> Acceso al módulo de gestión de huéspedes.</li>
+                        <li><strong>Habitaciones:</strong> Dirige a la sección de visualización de habitaciones.</li>
+                        <li><strong>Tareas:</strong> Acceso al módulo de gestión de actividades.</li>
+                        <li><strong>Minibar:</strong> Ingreso al módulo de gestión de productos del minibar.</li>
+                        <li><strong>Cuenta:</strong> Permite acceder al apartado de cuenta del usuario, donde se pueden ver reservas y documentos.</li>
+                        <li><strong>Administrador:</strong> Dirige al panel de administración del sistema.</li>
+                        <li><strong>Icono de Perfil (Cerrar Sesión):</strong> Habilita la acción de cerrar sesión.</li>
+                    </ul>
+
+                    <h3>Ingreso al Sistema</h3>
+                    <ul>
+                        <li><strong>Inicio de Sesión:</strong> Permite a usuarios (aprendices o instructores) acceder al sistema con un nombre de usuario y su número de documento como contraseña. Incluye una opción de recuperación de contraseña.</li>
+                        <li><strong>Registro de Usuarios:</strong> Facilita el registro de nuevos aprendices, solicitando datos como tipo y número de documento, nombre completo, teléfono, número de ficha y correo electrónico.</li>
+                    </ul>
+
+                    <h3>Módulo Inicio (Home) / Gestión de Reservas</h3>
+                    <ul>
+                        <li><strong>Calendario Interactivo:</strong> Muestra las reservas actuales y futuras. Las reservas se codifican por color según su estado: Rojo para habitaciones finalizadas, Verde para habitaciones ocupadas y Azul para habitaciones reservadas.</li>
+                        <li><strong>Módulo Reservar:</strong> Permite la creación de nuevas reservas, especificando número de habitación, documento del huésped, tipo de persona (Funcionario/Persona Externa) y fechas de ingreso y salida. Campos para abono y cantidad de acompañantes son opcionales.</li>
+                        <li><strong>Módulo Editar Reserva:</strong> Habilita la modificación de reservas existentes, incluyendo la adición de documentos de acompañantes y el registro de consumos del minibar asociados a la habitación.</li>
+                        <li><strong>Eliminar Reserva:</strong> Permite cancelar o eliminar reservas de la tabla.</li>
+                    </ul>
+                    <div class="image-placeholder">
+                        <img src="/image.png" alt="Imagen de ejemplo del Módulo de Reservas" class="image-clickable">
+                    </div>
+                    <p class="image-caption">Ejemplo visual del Módulo de Reservas.</p>
+                </div>
+
+                <div>
+                    <h3>Módulo Huéspedes</h3>
+                    <ul>
+                        <li><strong>Agregar Huésped Nuevo:</strong> Abre un formulario para registrar datos básicos y de contacto de emergencia de un nuevo huésped.</li>
+                        <li><strong>Consultar/Actualizar Huésped Antiguo:</strong> Permite visualizar y actualizar la información de huéspedes existentes.</li>
+                        <li><strong>Descargar Comprobante:</strong> Genera y permite descargar un comprobante de registro en formato PDF.</li>
+                    </ul>
+                    <div class="image-placeholder">
+                        <img src="/image copy.png" alt="Imagen de ejemplo del Módulo de Huéspedes" class="image-clickable">
+                    </div>
+                    <p class="image-caption">Ejemplo visual del Módulo de Huéspedes.</p>
+
+                    <h3>Vista de Habitaciones</h3>
+                    <p>Proporciona una interfaz visual para consultar las habitaciones disponibles y sus descripciones, útil para aprendices y huéspedes.</p>
+                    <div class="image-placeholder">
+                        <img src="/image copy 2.png" alt="Imagen de ejemplo de la Vista de Habitaciones" class="image-clickable">
+                    </div>
+                    <p class="image-caption">Ejemplo visual de la Vista de Habitaciones.</p>
+
+                    <h3>Módulo Tareas</h3>
+                    <ul>
+                        <li>Permite a los usuarios gestionar sus tareas diarias, con opciones para agregar, editar o eliminar.</li>
+                        <li><strong>Registrar Observación:</strong> Incluye una sección para que los usuarios registren eventos o incidencias del día, visibles para todos.</li>
+                    </ul>
+                    <div class="image-placeholder">
+                        <img src="/image copy 3.png" alt="Imagen de ejemplo del Módulo de Tareas" class="image-clickable">
+                    </div>
+                    <p class="image-caption">Ejemplo visual del Módulo de Tareas.</p>
+
+                    <h3>Módulo Minibar</h3>
+                    <ul>
+                        <li>Administra los productos del minibar, incluyendo inventario y asignación a habitaciones.</li>
+                        <li><strong>Agregar Productos:</strong> Se pueden agregar nuevos productos (nombre, referencia, precio, cantidad).</li>
+                        <li><strong>Asignar Producto a Habitación:</strong> Permite asignar productos con cantidades específicas a habitaciones.</li>
+                        <li><strong>Ajustar Stock de Producto:</strong> Permite ajustar el stock de productos existentes.</li>
+                        <li><strong>Retirar Producto:</strong> Implícito en la gestión de stock y asignaciones.</li>
+                    </ul>
+                    <div class="image-placeholder">
+                        <img src="/image copy 4.png" alt="Imagen de ejemplo del Módulo de Minibar" class="image-clickable">
+                    </div>
+                    <p class="image-caption">Ejemplo visual del Módulo de Minibar.</p>
+
+                    <h3>Módulo Cuenta</h3>
+                    <ul>
+                        <li>Muestra las reservas activas del usuario.</li>
+                        <li><strong>Descargar Abono:</strong> Proporciona opciones para descargar comprobantes de abono.</li>
+                        <li><strong>Descargar Factura:</strong> Permite descargar facturas totales de las reservas.</li>
+                    </ul>
+                    <div class="image-placeholder">
+                        <img src="/image copy 5.png" alt="Imagen de ejemplo del Módulo de Cuenta" class="image-clickable">
+                    </div>
+                    <p class="image-caption">Ejemplo visual del Módulo de Cuenta.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nueva Sección: Generador de Escenarios de Uso con IA -->
+        <section class="section-card">
+            <h2>Generador de Escenarios de Uso ✨</h2>
+            <p class="mb-4">Describe un módulo o una funcionalidad de Sena Dream y la IA generará un escenario de uso práctico para un hotel escuela.</p>
+            <textarea id="scenarioInput" class="w-full p-3 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400" rows="4" placeholder="Ej: 'Módulo Reservar para un nuevo huésped', 'Gestión de Minibar en una habitación ocupada'..."></textarea>
+            <button id="generateScenarioBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">
+                Generar Escenario ✨
+            </button>
+            <div id="loadingSpinner" class="spinner mt-4"></div>
+            <div id="scenarioOutput" class="mt-4 p-3 bg-blue-50 text-gray-800 rounded-md border border-blue-200 min-h-[100px] overflow-auto">
+                El escenario generado aparecerá aquí.
+            </div>
+        </section>
+
+
+        <!-- 4. Datos Clave para la Página Web (Diccionario de Datos) -->
+        <section class="section-card">
+            <h2>4. Datos Clave (Diccionario de Datos)</h2>
+            <p>La página web manejará y mostrará información basada en las siguientes estructuras de datos:</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3>Usuarios/Aprendices</h3>
+                    <ul>
+                        <li>Tipo de documento</li>
+                        <li>Número de documento</li>
+                        <li>Nombre completo</li>
+                        <li>Teléfono</li>
+                        <li>Número de ficha</li>
+                        <li>Correo electrónico</li>
+                        <li>Nombre de usuario (para iniciar sesión)</li>
+                        <li>Contraseña (número de documento)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Huéspedes (datos adicionales)</h3>
+                    <ul>
+                        <li>Apellido</li>
+                        <li>Fecha de Nacimiento</li>
+                        <li>Dirección</li>
+                        <li>Email</li>
+                        <li>Contacto de Emergencia</li>
+                        <li>Teléfono del Contacto de Emergencia</li>
+                    </ul>
+                    <h3>Reservas</h3>
+                    <ul>
+                        <li>ID (de reserva)</li>
+                        <li>Número de Habitación</li>
+                        <li>Documento de Huésped / ID Huésped</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal para zoom de imágenes -->
+    <div id="imageModal" class="image-modal">
+        <span class="image-modal-close">&times;</span>
+        <img id="modalImage" class="image-modal-content" alt="Imagen ampliada">
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Funcionalidad del generador de escenarios
+            const scenarioInput = document.getElementById('scenarioInput');
+            const generateScenarioBtn = document.getElementById('generateScenarioBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const scenarioOutput = document.getElementById('scenarioOutput');
+
+            // Funcionalidad del modal de imagen
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const closeBtn = document.querySelector('.image-modal-close');
+            const clickableImages = document.querySelectorAll('.image-clickable');
+
+            // Agregar evento de clic a cada imagen
+            clickableImages.forEach(img => {
+                img.addEventListener('click', () => {
+                    modal.classList.add('active');
+                    modalImage.src = img.src;
+                    modalImage.alt = img.alt;
+                    document.body.style.overflow = 'hidden'; // Evitar scroll del body
+                });
+            });
+
+            // Cerrar modal con el botón X
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto'; // Restaurar scroll del body
+            });
+
+            // Cerrar modal al hacer clic fuera de la imagen
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto'; // Restaurar scroll del body
+                }
+            });
+
+            // Cerrar modal con la tecla Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto'; // Restaurar scroll del body
+                }
+            });
+
+            generateScenarioBtn.addEventListener('click', async () => {
+                const promptText = scenarioInput.value.trim();
+
+                if (!promptText) {
+                    scenarioOutput.innerHTML = '<p class="text-red-500">Por favor, describe el módulo o funcionalidad para generar un escenario.</p>';
+                    return;
+                }
+
+                // Show loading and disable button
+                loadingSpinner.style.display = 'block';
+                generateScenarioBtn.disabled = true;
+                scenarioOutput.innerHTML = ''; // Clear previous output
+
+                try {
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: `Genera un escenario de uso detallado para el siguiente módulo o funcionalidad del software de gestión hotelera de un hotel escuela: "${promptText}". El escenario debe describir una situación práctica, los pasos que un usuario (aprendice o administrador) seguiría, y el resultado esperado. Sé conciso pero informativo.` }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = ""; // Canvas will automatically provide the API key
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        scenarioOutput.innerHTML = `<p class="whitespace-pre-wrap">${text}</p>`; // Use pre-wrap to preserve formatting
+                    } else {
+                        scenarioOutput.innerHTML = '<p class="text-red-500">No se pudo generar el escenario. Intenta de nuevo.</p>';
+                        console.error('Unexpected API response structure:', result);
+                    }
+                } catch (error) {
+                    scenarioOutput.innerHTML = `<p class="text-red-500">Error al conectar con la API: ${error.message}</p>`;
+                    console.error('Error fetching from Gemini API:', error);
+                } finally {
+                    // Hide loading and enable button
+                    loadingSpinner.style.display = 'none';
+                    generateScenarioBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
